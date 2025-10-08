@@ -22,7 +22,7 @@ Lambda-Check is a command-line tool developed as a capstone project. It scans an
 
 2.  **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/Chami-hbm/lambda-check-scanner.git
     cd lambda-check
     ```
 
