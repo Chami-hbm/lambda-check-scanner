@@ -139,7 +139,8 @@ def main() -> None:
                 all_findings.update(result)
 
         # After the concurrent work is done, we calculate the total scan duration.
-        scan_duration = time.time() - start_time
+        end_time = time.time()
+        scan_duration = end_time - start_time
 
         # Finally, it calls the two reporting functions to display the results.
         print_console_summary(all_findings, scan_duration)
