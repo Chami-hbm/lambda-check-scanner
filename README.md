@@ -19,6 +19,7 @@ Lambda-Check is a command-line tool developed as a capstone project. It scans an
 1.  **Prerequisites:**
     - Python 3.8+
     - An AWS account and an IAM user with the required read-only permissions.
+    - Git installed (for cloning).
 
 2.  **Clone the repository:**
     ```bash
@@ -26,10 +27,14 @@ Lambda-Check is a command-line tool developed as a capstone project. It scans an
     cd lambda-check
     ```
 
-3.  **Set up a virtual environment:**
+3.  **Set up a Python virtual environment:**
     ```bash
     python3 -m venv venv
+    # Activate the environment
+    # On macOS/Linux:
     source venv/bin/activate
+    # On Windows:
+    .\venv\Scripts\activate
     ```
 
 4.  **Install dependencies:**
@@ -37,10 +42,45 @@ Lambda-Check is a command-line tool developed as a capstone project. It scans an
     pip install -r requirements.txt
     ```
 
-5.  **Configure AWS Credentials:**
-    Configure the AWS CLI with the credentials for the IAM user that will run the scan. You can use either the default profile or a named profile.
+5.  **Create the Required IAM Policy:**
+    The `Lambda-Check` tool requires specific read-only permissions to scan your AWS resources. Create an IAM policy in your AWS account with the following JSON definition. Name it something memorable, like `LambdaCheckReadOnlyAccess`.
+
+    ```json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "LambdaCheckReadOnlyPermissions",
+                "Effect": "Allow",
+                "Action": [
+                    "lambda:ListFunctions",
+                    "lambda:GetFunctionConfiguration",
+                    "lambda:GetPolicy",
+                    "iam:ListAttachedRolePolicies",
+                    "iam:GetRolePolicy",
+                    "iam:ListRolePolicies",
+                    "iam:GetPolicy",
+                    "iam:GetPolicyVersion",
+                    "logs:FilterLogEvents",
+                    "cloudwatch:GetMetricData",
+                    "apigateway:GET"
+                ],
+                "Resource": "*"
+            }
+        ]
+    }
+    ```
+
+6.  **Create or Choose an IAM User:**
+    Create a dedicated IAM user (recommended) or choose an existing user that will run the scan.
+
+7.  **Attach the Policy to the User:**
+    Attach the `LambdaCheckReadOnlyAccess` policy you created in step 5 to the IAM user you will use for scanning.
+
+8.  **Configure AWS Credentials:**
+    Configure the AWS CLI with the Access Key ID and Secret Access Key for the IAM user that has the `LambdaCheckReadOnlyAccess` policy attached. You can use either the default profile or a named profile.
     ```bash
-    # For a default profile
+    # For the default profile
     aws configure
 
     # For a named profile (e.g., 'lambda-scanner')
